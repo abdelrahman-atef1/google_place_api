@@ -1,7 +1,7 @@
 # google_place_api
 
 A Flutter plugin for iOS and Android and Web that provides a [Google Place API](https://developers.google.com/places/web-service/intro).
-This package is forked from https://github.com/bazrafkan, appreciate your contribution.
+This package is forked from [bazrafkan](https://github.com/bazrafkan), appreciate your contribution.
 
 ## Preview
 
@@ -108,7 +108,7 @@ var googlePlace = GooglePlace("Your-Key", headers: headers);
 
 ## Proxy URL for Web
 
-Now is possible to set proxy url for web. **proxyUrl** can be formatted as [https:// || http://]host[:<port>][/<path>][?<url-param-name>=]
+Now is possible to set proxy url for web. **proxyUrl** can be formatted as `[https:// | http://]host[:port][/path][?url-param-name=]`
 
 ```dart
 var googlePlace = GooglePlace("Your-Key", proxyUrl: 'https://localhost:5000');

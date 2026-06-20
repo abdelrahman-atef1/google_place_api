@@ -1,8 +1,4 @@
 import 'package:google_place_api/google_place_api.dart';
-import 'package:google_place_api/src/utils/http_places_http_client.dart';
-import 'package:google_place_api/src/utils/places_http_client.dart';
-import 'package:google_place_api/src/utils/places_operation.dart';
-import 'package:google_place_api/src/utils/places_proxy_config.dart';
 
 /// The Network Utility
 class NetworkUtility {

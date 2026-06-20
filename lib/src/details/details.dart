@@ -1,5 +1,4 @@
 import 'package:google_place_api/google_place_api.dart';
-import 'package:google_place_api/src/details/details_response.dart';
 import 'package:google_place_api/src/utils/network_utility.dart';
 
 class Details {
