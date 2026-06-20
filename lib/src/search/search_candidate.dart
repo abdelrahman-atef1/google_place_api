@@ -65,7 +65,7 @@ class SearchCandidate {
   final String? scope;
 
   /// [types] contains an array of feature types describing the given result. See the list of supported types.
-  /// XML responses include multiple <type> elements if more than one type is assigned to the result.
+  /// XML responses include multiple {type} elements if more than one type is assigned to the result.
   final List<String>? types;
 
   /// [userRatingsTotal] is user ratings total.
@@ -110,15 +110,13 @@ class SearchCandidate {
       openingHours: json['opening_hours'] != null
           ? OpeningHours.fromJson(json['opening_hours'])
           : null,
-      photos: json['photos'] != null
-          ? json['photos'].map<Photo>((json) => Photo.fromJson(json)).toList()
-          : null,
+      photos: json['photos']?.map<Photo>((json) => Photo.fromJson(json)).toList(),
       plusCode: json['plus_code'] != null
           ? PlusCode.fromJson(json['plus_code'])
           : null,
       formattedAddress: json['formatted_address'],
       name: json['name'],
-      rating: json['rating'] != null ? json['rating'].toDouble() : null,
+      rating: json['rating']?.toDouble(),
       icon: json['icon'],
       id: json['id'],
       placeId: json['place_id'],

@@ -74,7 +74,7 @@ class DetailsResult {
   final String? scope;
 
   /// [types] contains an array of feature types describing the given result.
-  /// XML responses include multiple <type> elements if more than one type is assigned to the result.
+  /// XML responses include multiple {type} elements if more than one type is assigned to the result.
   final List<String>? types;
 
   /// [url] contains the URL of the official Google page for this place. This will be the Google-owned page
@@ -144,11 +144,8 @@ class DetailsResult {
 
   factory DetailsResult.fromJson(Map<String, dynamic> json) {
     return DetailsResult(
-      addressComponents: json['address_components'] != null
-          ? json['address_components']
-              .map<AddressComponent>((json) => AddressComponent.fromJson(json))
-              .toList()
-          : null,
+      addressComponents: json['address_components']?.map<AddressComponent>((json) => AddressComponent.fromJson(json))
+              .toList(),
       businessStatus: json['business_status'],
       adrAddress: json['adr_address'],
       formattedAddress: json['formatted_address'],
@@ -162,20 +159,15 @@ class DetailsResult {
       openingHours: json['opening_hours'] != null
           ? OpeningHours.fromJson(json['opening_hours'])
           : null,
-      photos: json['photos'] != null
-          ? json['photos'].map<Photo>((json) => Photo.fromJson(json)).toList()
-          : null,
+      photos: json['photos']?.map<Photo>((json) => Photo.fromJson(json)).toList(),
       placeId: json['place_id'],
       plusCode: json['plus_code'] != null
           ? PlusCode.fromJson(json['plus_code'])
           : null,
-      rating: json['rating'] != null ? json['rating'].toDouble() : null,
+      rating: json['rating']?.toDouble(),
       reference: json['reference'],
-      reviews: json['reviews'] != null
-          ? json['reviews']
-              .map<Review>((json) => Review.fromJson(json))
-              .toList()
-          : null,
+      reviews: json['reviews']?.map<Review>((json) => Review.fromJson(json))
+              .toList(),
       scope: json['scope'],
       types: json['types'] != null
           ? (json['types'] as List<dynamic>).cast<String>()

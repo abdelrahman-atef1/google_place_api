@@ -232,7 +232,7 @@ class Autocomplete {
       'key': apiKEY,
     };
 
-    if (components != null && components.length > 0) {
+    if (components != null && components.isNotEmpty) {
       String result = '';
       for (int i = 0; i < components.length; i++) {
         result += '${components[i].component}:${components[i].value}';

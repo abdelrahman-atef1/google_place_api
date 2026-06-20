@@ -1,5 +1,3 @@
-library google_place_api;
-
 import 'package:google_place_api/src/autocomplete/autocomplete.dart';
 import 'package:google_place_api/src/details/details.dart';
 import 'package:google_place_api/src/photos/photos.dart';
@@ -28,7 +26,7 @@ export 'package:google_place_api/src/models/opening_hours.dart';
 export 'package:google_place_api/src/models/period.dart';
 export 'package:google_place_api/src/models/photo.dart';
 export 'package:google_place_api/src/models/plus_code.dart';
-export 'package:google_place_api/src/models/rank-by.dart';
+export 'package:google_place_api/src/models/rank_by.dart';
 export 'package:google_place_api/src/models/review.dart';
 export 'package:google_place_api/src/models/southwest.dart';
 export 'package:google_place_api/src/models/structured_formatting.dart';
@@ -68,7 +66,7 @@ class GooglePlace {
   final Map<String, String> headers;
 
   /// Optional proxy url to web request
-  /// Can be formatted as [https:// || http://]host[:<port>][/<path>][?<url-param-name>=]
+  /// Can be formatted as [https:// || http://]host[:port][/path][?url-param-name>=]
   /// http proxies are supported, but are not recommended for production use.
   final String? proxyUrl;
 
@@ -77,10 +75,10 @@ class GooglePlace {
     this.headers = const {},
     this.proxyUrl,
   }) {
-    this.search = Search(apiKEY, headers, proxyUrl);
-    this.details = Details(apiKEY, headers, proxyUrl);
-    this.photos = Photos(apiKEY, headers, proxyUrl);
-    this.autocomplete = Autocomplete(apiKEY, headers, proxyUrl);
-    this.queryAutocomplete = QueryAutocomplete(apiKEY, headers, proxyUrl);
+    search = Search(apiKEY, headers, proxyUrl);
+    details = Details(apiKEY, headers, proxyUrl);
+    photos = Photos(apiKEY, headers, proxyUrl);
+    autocomplete = Autocomplete(apiKEY, headers, proxyUrl);
+    queryAutocomplete = QueryAutocomplete(apiKEY, headers, proxyUrl);
   }
 }

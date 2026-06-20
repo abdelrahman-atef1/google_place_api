@@ -20,7 +20,7 @@ class NetworkUtility {
   }
 
   /// Creates a uri with the proxy url if it is set
-  /// [proxyUrl] Required parameters - can be formatted as [https://]host[:<port>][/<path>][?<url-param-name>=] only https proxies are supported.
+  /// [proxyUrl] Required parameters - can be formatted as [https://]host[:port][/path][?url-param-name>=] only https proxies are supported.
   /// [authority] Required parameters - the domain name of the google server, usually https://maps.googleapis.com
   /// [unencodedGoogleMapsPath] Required parameters - the path to the api, usually something like maps/api/...
   /// [queryParameters] Required parameters - a map of query parameters to be appended to the url

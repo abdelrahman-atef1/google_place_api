@@ -6,8 +6,8 @@ class Southwest {
 
   factory Southwest.fromJson(Map<String, dynamic> json) {
     return Southwest(
-      lat: json['lat'] != null ? json['lat'].toDouble() : null,
-      lng: json['lng'] != null ? json['lng'].toDouble() : null,
+      lat: json['lat']?.toDouble(),
+      lng: json['lng']?.toDouble(),
     );
   }
 }

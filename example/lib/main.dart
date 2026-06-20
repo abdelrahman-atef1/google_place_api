@@ -11,6 +11,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,11 +26,13 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   GooglePlace? googlePlace;
   List<AutocompletePrediction> predictions = [];
 
@@ -68,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                   if (value.isNotEmpty) {
                     autoCompleteSearch(value);
                   } else {
-                    if (predictions.length > 0 && mounted) {
+                    if (predictions.isNotEmpty && mounted) {
                       setState(() {
                         predictions = [];
                       });
@@ -134,26 +138,24 @@ class DetailsPage extends StatefulWidget {
   final GooglePlace googlePlace;
 
   const DetailsPage(
-      {Key? key, required this.placeId, required this.googlePlace})
-      : super(key: key);
+      {super.key, required this.placeId, required this.googlePlace});
 
   @override
-  _DetailsPageState createState() =>
-      _DetailsPageState(this.placeId, this.googlePlace);
+  DetailsPageState createState() => DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
-  final String placeId;
-  final GooglePlace googlePlace;
-
-  _DetailsPageState(this.placeId, this.googlePlace);
+class DetailsPageState extends State<DetailsPage> {
+  late final String placeId;
+  late final GooglePlace googlePlace;
 
   DetailsResult? detailsResult;
   List<Uint8List> images = [];
 
   @override
   void initState() {
-    getDetails(this.placeId);
+    placeId = widget.placeId;
+    googlePlace = widget.googlePlace;
+    getDetails(placeId);
     super.initState();
   }
 
@@ -167,7 +169,7 @@ class _DetailsPageState extends State<DetailsPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
         onPressed: () {
-          getDetails(this.placeId);
+          getDetails(placeId);
         },
         child: Icon(Icons.refresh),
       ),
@@ -177,13 +179,13 @@ class _DetailsPageState extends State<DetailsPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Container(
+              SizedBox(
                 height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: images.length,
                   itemBuilder: (context, index) {
-                    return Container(
+                    return SizedBox(
                       width: 250,
                       child: Card(
                         elevation: 4,
@@ -328,7 +330,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void getDetails(String placeId) async {
-    var result = await this.googlePlace.details.get(placeId);
+    var result = await googlePlace.details.get(placeId);
     if (result != null && result.result != null && mounted) {
       setState(() {
         detailsResult = result.result;
@@ -344,8 +346,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   void getPhoto(String photoReference) async {
-    var result = await this
-        .googlePlace
+    var result = await googlePlace
         .photos
         .get(photoReference: photoReference, maxWidth: 400);
     if (result != null && mounted) {

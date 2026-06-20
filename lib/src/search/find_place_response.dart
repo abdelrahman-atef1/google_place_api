@@ -29,11 +29,8 @@ class FindPlaceResponse {
       debugLog: json['debug_log'] != null
           ? DebugLog.fromJson(json['debug_log'])
           : null,
-      candidates: json['candidates'] != null
-          ? json['candidates']
-              .map<SearchCandidate>((json) => SearchCandidate.fromJson(json))
-              .toList()
-          : null,
+      candidates: json['candidates']?.map<SearchCandidate>((json) => SearchCandidate.fromJson(json))
+              .toList(),
     );
   }
 

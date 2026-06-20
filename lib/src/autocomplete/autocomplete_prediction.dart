@@ -54,19 +54,14 @@ class AutocompletePrediction {
       description: json['description'] as String?,
       distanceMeters: json['distance_meters'] as int?,
       id: json['id'] as String?,
-      matchedSubstrings: json['matched_substrings'] != null
-          ? json['matched_substrings']
-              .map<MatchedSubstring>((json) => MatchedSubstring.fromJson(json))
-              .toList()
-          : null,
+      matchedSubstrings: json['matched_substrings']?.map<MatchedSubstring>((json) => MatchedSubstring.fromJson(json))
+              .toList(),
       placeId: json['place_id'] as String?,
       reference: json['reference'] as String?,
       structuredFormatting: json['structured_formatting'] != null
           ? StructuredFormatting.fromJson(json['structured_formatting'])
           : null,
-      terms: json['terms'] != null
-          ? json['terms'].map<Term>((json) => Term.fromJson(json)).toList()
-          : null,
+      terms: json['terms']?.map<Term>((json) => Term.fromJson(json)).toList(),
       types: json['types'] != null
           ? (json['types'] as List<dynamic>).cast<String>()
           : null,

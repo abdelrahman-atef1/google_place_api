@@ -12,12 +12,9 @@ class AutocompleteResponse {
   factory AutocompleteResponse.fromJson(Map<String, dynamic> json) {
     return AutocompleteResponse(
       status: json['status'] as String?,
-      predictions: json['predictions'] != null
-          ? json['predictions']
-              .map<AutocompletePrediction>(
+      predictions: json['predictions']?.map<AutocompletePrediction>(
                   (json) => AutocompletePrediction.fromJson(json))
-              .toList()
-          : null,
+              .toList(),
     );
   }
 

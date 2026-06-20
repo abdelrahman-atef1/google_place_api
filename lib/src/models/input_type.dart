@@ -2,6 +2,6 @@
 /// Phone numbers must be in international format (prefixed by a plus sign ("+"),
 /// followed by the country code, then the phone number itself).
 enum InputType {
-  TextQuery,
-  PhoneNumber,
+  textQuery,
+  phoneNumber,
 }

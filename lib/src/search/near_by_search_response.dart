@@ -29,11 +29,8 @@ class NearBySearchResponse {
       debugLog: json['debug_log'] != null
           ? DebugLog.fromJson(json['debug_log'])
           : null,
-      results: json['results'] != null
-          ? json['results']
-              .map<SearchResult>((json) => SearchResult.fromJson(json))
-              .toList()
-          : null,
+      results: json['results']?.map<SearchResult>((json) => SearchResult.fromJson(json))
+              .toList(),
     );
   }
 

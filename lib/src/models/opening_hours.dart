@@ -26,11 +26,8 @@ class OpeningHours {
       weekdayText: json['weekday_text'] != null
           ? (json['weekday_text'] as List<dynamic>).cast<String>()
           : null,
-      periods: json['periods'] != null
-          ? json['periods']
-              .map<Period>((json) => Period.fromJson(json))
-              .toList()
-          : null,
+      periods: json['periods']?.map<Period>((json) => Period.fromJson(json))
+              .toList(),
     );
   }
 }

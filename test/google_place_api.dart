@@ -25,7 +25,7 @@ void main() {
     await googlePlace.queryAutocomplete.get("some place");
     googlePlace = GooglePlace(apiKey,
         proxyUrl: 'https://localhost:6969/proxy/proxy-two/');
-    await googlePlace.search.getFindPlace("some place", InputType.TextQuery);
+    await googlePlace.search.getFindPlace("some place", InputType.textQuery);
     googlePlace = GooglePlace(apiKey,
         proxyUrl: 'localhost:6969/proxy/proxy-two?gmapsurl=');
     await googlePlace.autocomplete.get("some place");

@@ -424,9 +424,9 @@ class Search {
     Map<String, String?> queryParameters = {
       'input': result,
       'key': apiKEY,
-      'inputtype': inputType == InputType.TextQuery
+      'inputtype': inputType == InputType.textQuery
           ? 'textquery'
-          : inputType == InputType.PhoneNumber
+          : inputType == InputType.phoneNumber
               ? 'phonenumber'
               : 'textquery',
     };
@@ -535,10 +535,10 @@ class Search {
 
     if (rankby != null) {
       String? value;
-      if (rankby == RankBy.Prominence) {
+      if (rankby == RankBy.prominence) {
         value = 'prominence';
       }
-      if (rankby == RankBy.Distance) {
+      if (rankby == RankBy.distance) {
         value = 'distance';
         queryParameters.remove('radius');
       }
