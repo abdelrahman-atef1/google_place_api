@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.1.1] - 2026-06-21
+
+- Move `flutter_lints` from dependencies to dev_dependencies
+
 ## [1.1.0] - 2026-06-21
 
 - Add injectable `PlacesHttpClient` abstraction with default `HttpPlacesHttpClient` (`http` package)
