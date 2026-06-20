@@ -1,21 +1,107 @@
 import 'package:google_place_api/google_place_api.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_place_api/src/utils/http_places_http_client.dart';
+import 'package:google_place_api/src/utils/places_http_client.dart';
+import 'package:google_place_api/src/utils/places_operation.dart';
+import 'package:google_place_api/src/utils/places_proxy_config.dart';
 
 /// The Network Utility
 class NetworkUtility {
   static Future<String?> fetchUrl(
     Uri uri, {
     Map<String, String>? headers,
+    PlacesHttpClient? httpClient,
   }) async {
+    final client = httpClient ?? HttpPlacesHttpClient();
     try {
-      final response =
-          await http.get(uri, headers: headers).timeout(GooglePlace.timeout);
+      final response = await client.get(
+        uri,
+        headers: headers,
+        timeout: GooglePlace.timeout,
+      );
       if (response.statusCode == 200) {
         return response.body;
       }
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Builds a request URI using the configured proxy/routing priority:
+  /// uriBuilder > proxyConfig.directRest > proxyUrl forwarder > direct Google.
+  static Uri buildPlacesUri({
+    required String? proxyUrl,
+    required PlacesProxyConfig? proxyConfig,
+    required PlacesUriBuilder? uriBuilder,
+    required PlacesOperation operation,
+    required String authority,
+    required String unencodedGoogleMapsPath,
+    required Map<String, String?> queryParameters,
+  }) {
+    if (uriBuilder != null) {
+      return uriBuilder(
+        operation: operation,
+        queryParameters: queryParameters,
+      );
+    }
+
+    if (proxyConfig != null &&
+        proxyConfig.mode == PlacesProxyMode.directRest &&
+        proxyConfig.proxyBaseUrl != null &&
+        proxyConfig.proxyBaseUrl!.isNotEmpty) {
+      return createDirectRestUri(
+        config: proxyConfig,
+        operation: operation,
+        queryParameters: queryParameters,
+      );
+    }
+
+    if (proxyUrl != null && proxyUrl != '') {
+      return createUri(
+        proxyUrl,
+        authority,
+        unencodedGoogleMapsPath,
+        queryParameters,
+      );
+    }
+
+    return Uri.https(authority, unencodedGoogleMapsPath, queryParameters);
+  }
+
+  static Uri createDirectRestUri({
+    required PlacesProxyConfig config,
+    required PlacesOperation operation,
+    required Map<String, String?> queryParameters,
+  }) {
+    final segment = config.operationPathOverrides?[operation] ??
+        _defaultOperationSegment(operation);
+    final base = config.proxyBaseUrl!.replaceAll(RegExp(r'/+$'), '');
+    final params = Map<String, String?>.from(queryParameters);
+    params.remove('key');
+    final filteredParams = {
+      for (final entry in params.entries)
+        if (entry.value != null) entry.key: entry.value!,
+    };
+    final uri = Uri.parse('$base/$segment');
+    return uri.replace(queryParameters: filteredParams);
+  }
+
+  static String _defaultOperationSegment(PlacesOperation operation) {
+    switch (operation) {
+      case PlacesOperation.autocomplete:
+        return 'autocomplete';
+      case PlacesOperation.details:
+        return 'details';
+      case PlacesOperation.findPlace:
+        return 'find';
+      case PlacesOperation.nearbySearch:
+        return 'nearby';
+      case PlacesOperation.textSearch:
+        return 'search';
+      case PlacesOperation.photo:
+        return 'photo';
+      case PlacesOperation.queryAutocomplete:
+        return 'queryautocomplete';
     }
   }
 
@@ -92,7 +178,6 @@ class NetworkUtility {
     } else {
       uri = googleApiUri;
     }
-    // print(uri.toString());
     return uri;
   }
 }

@@ -8,8 +8,18 @@ class Details {
   final String apiKEY;
   final Map<String, String> headers;
   final String? proxyUrl;
+  final PlacesProxyConfig? proxyConfig;
+  final PlacesUriBuilder? uriBuilder;
+  final PlacesHttpClient httpClient;
 
-  Details(this.apiKEY, this.headers, this.proxyUrl);
+  Details(
+    this.apiKEY,
+    this.headers,
+    this.proxyUrl, {
+    this.proxyConfig,
+    this.uriBuilder,
+    required this.httpClient,
+  });
 
   /// Once you have a place_id from a Place Search, you can request more details about a
   /// particular establishment or point of interest by initiating a Place Details request.
@@ -52,13 +62,17 @@ class Details {
       sessionToken,
       fields,
     );
-    var uri = NetworkUtility.createUri(
-      proxyUrl,
-      _authority,
-      _unencodedPath,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.details,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
     );
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return DetailsResponse.parseDetailsResult(response);
     }
@@ -107,14 +121,17 @@ class Details {
       fields,
     );
 
-    var uri = Uri.https(
-      proxyUrl != null && proxyUrl != '' ? proxyUrl! : _authority,
-      proxyUrl != null && proxyUrl != ''
-          ? 'https://$_authority/$_unencodedPath'
-          : _unencodedPath,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.details,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
     );
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// Prepare query Parameters

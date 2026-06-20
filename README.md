@@ -113,3 +113,85 @@ Now is possible to set proxy url for web. **proxyUrl** can be formatted as [http
 ```dart
 var googlePlace = GooglePlace("Your-Key", proxyUrl: 'https://localhost:5000');
 ```
+
+## Backend REST Proxy
+
+Route Google Places through a backend that injects the API key. The mobile app sends a JWT; no `GOOGLE_API_KEY` in the app.
+
+```dart
+final googlePlace = GooglePlace(
+  '',
+  headers: {
+    'Authorization': 'Bearer $jwt',
+    // ... app-specific headers
+  },
+  proxyConfig: PlacesProxyConfig(
+    mode: PlacesProxyMode.directRest,
+    proxyBaseUrl: 'https://api.test.example.net/api/v1/proxy/google/places',
+  ),
+  httpClient: DioPlacesHttpClient(dio),
+);
+```
+
+Requests are routed to clean REST paths:
+
+- `GET .../autocomplete?input=...`
+- `GET .../details?place_id=...`
+- `GET .../search?query=...`
+- `GET .../nearby?location=...`
+- `GET .../find?input=...`
+
+The `key` query parameter is stripped in `directRest` mode (backend injects it). No `url=` forwarder param.
+
+URI priority: `uriBuilder` > `proxyConfig.directRest` > `proxyUrl` forwarder > direct Google API.
+
+## Injectable HTTP Client (Dio)
+
+By default the package uses `package:http`. Pass a custom `PlacesHttpClient` to use Dio (JWT interceptors, SSL pinning, logging, etc.). Dio is **not** a dependency of this package — implement the adapter in your app:
+
+```dart
+class DioPlacesHttpClient implements PlacesHttpClient {
+  final Dio _dio;
+
+  DioPlacesHttpClient(this._dio);
+
+  @override
+  Future<PlacesHttpResponse> get(
+    Uri uri, {
+    Map<String, String>? headers,
+    Duration? timeout,
+  }) async {
+    final response = await _dio.getUri(
+      uri,
+      options: Options(
+        headers: headers,
+        responseType: ResponseType.plain,
+        sendTimeout: timeout,
+        receiveTimeout: timeout,
+      ),
+    );
+    return PlacesHttpResponse(
+      statusCode: response.statusCode ?? 0,
+      body: response.data as String,
+    );
+  }
+}
+```
+
+`GooglePlace.timeout` applies to all HTTP clients.
+
+## Custom URI Builder
+
+For non-standard backend paths, provide a `PlacesUriBuilder`:
+
+```dart
+GooglePlace(
+  '',
+  uriBuilder: ({
+    required PlacesOperation operation,
+    required Map<String, String?> queryParameters,
+  }) {
+    // build Uri for your backend
+  },
+);
+```

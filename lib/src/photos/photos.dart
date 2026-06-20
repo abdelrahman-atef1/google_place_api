@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:google_place_api/google_place_api.dart';
 import 'package:google_place_api/src/utils/network_utility.dart';
 
 class Photos {
@@ -8,8 +9,18 @@ class Photos {
   final String apiKEY;
   final Map<String, String> headers;
   final String? proxyUrl;
+  final PlacesProxyConfig? proxyConfig;
+  final PlacesUriBuilder? uriBuilder;
+  final PlacesHttpClient httpClient;
 
-  Photos(this.apiKEY, this.headers, this.proxyUrl);
+  Photos(
+    this.apiKEY,
+    this.headers,
+    this.proxyUrl, {
+    this.proxyConfig,
+    this.uriBuilder,
+    required this.httpClient,
+  });
 
   /// The Place Photo service, part of the Places API, is a read- only API that allows you to
   /// add high quality photographic content to your application. The Place Photo service gives
@@ -40,9 +51,17 @@ class Photos {
       maxHeight,
       maxWidth,
     );
-    var uri = NetworkUtility.createUri(
-        proxyUrl, _authority, _unencodedPath, queryParameters);
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.photo,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
+    );
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       List<int> list = response.codeUnits;
       return Uint8List.fromList(list);
@@ -79,14 +98,17 @@ class Photos {
       maxHeight,
       maxWidth,
     );
-    var uri = Uri.https(
-      proxyUrl != null && proxyUrl != '' ? proxyUrl! : _authority,
-      proxyUrl != null && proxyUrl != ''
-          ? 'https://$_authority/$_unencodedPath'
-          : _unencodedPath,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.photo,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
     );
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// Prepare query Parameters

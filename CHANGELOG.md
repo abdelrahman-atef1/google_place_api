@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [1.1.0] - 2026-06-21
+
+- Add injectable `PlacesHttpClient` abstraction with default `HttpPlacesHttpClient` (`http` package)
+- Add `PlacesProxyConfig` with `PlacesProxyMode.directRest` for clean REST backend proxies (no embedded Google URL, no `key` param)
+- Add `PlacesUriBuilder` callback for custom URI routing (highest priority)
+- Wire `httpClient`, `proxyConfig`, and `uriBuilder` through `GooglePlace` and all API classes
+- Export `PlacesHttpClient`, `PlacesHttpResponse`, `HttpPlacesHttpClient`, `PlacesOperation`, `PlacesProxyConfig`, `PlacesProxyMode`, `PlacesUriBuilder`
+- Backward compatible: omitting new parameters preserves v1.0.0 behavior
+
 ## [1.0.0] - 2023-12-25
 
 - Reformatting code: add null-safety

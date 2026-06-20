@@ -10,8 +10,18 @@ class Search {
   final String apiKEY;
   final Map<String, String> headers;
   final String? proxyUrl;
+  final PlacesProxyConfig? proxyConfig;
+  final PlacesUriBuilder? uriBuilder;
+  final PlacesHttpClient httpClient;
 
-  Search(this.apiKEY, this.headers, this.proxyUrl);
+  Search(
+    this.apiKEY,
+    this.headers,
+    this.proxyUrl, {
+    this.proxyConfig,
+    this.uriBuilder,
+    required this.httpClient,
+  });
 
   /// A Find Place request takes a text input and returns a place.
   /// The input can be any kind of Places text data, such as a name, address, or phone number.
@@ -50,9 +60,17 @@ class Search {
       locationbias,
     );
 
-    var uri = NetworkUtility.createUri(
-        proxyUrl, _authority, _unencodedPathFindPlace, queryParameters);
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.findPlace,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathFindPlace,
+      queryParameters: queryParameters,
+    );
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return FindPlaceResponse.parseFindPlaceResult(response);
     }
@@ -126,9 +144,17 @@ class Search {
       pagetoken,
     );
 
-    var uri =
-        Uri.https(_authority, _unencodedPathNearBySearch, queryParameters);
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.nearbySearch,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathNearBySearch,
+      queryParameters: queryParameters,
+    );
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return NearBySearchResponse.parseNearBySearchResult(response);
     }
@@ -207,8 +233,17 @@ class Search {
       pagetoken,
     );
 
-    var uri = Uri.https(_authority, _unencodedPathTextSearch, queryParameters);
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.textSearch,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathTextSearch,
+      queryParameters: queryParameters,
+    );
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return TextSearchResponse.parseTextSearchResult(response);
     }
@@ -252,14 +287,17 @@ class Search {
       locationbias,
     );
 
-    var uri = Uri.https(
-      proxyUrl != null && proxyUrl != '' ? proxyUrl! : _authority,
-      proxyUrl != null && proxyUrl != ''
-          ? 'https://$_authority/$_unencodedPathFindPlace'
-          : _unencodedPathFindPlace,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.findPlace,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathFindPlace,
+      queryParameters: queryParameters,
     );
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// A Nearby Search lets you search for places within a specified area.
@@ -329,9 +367,17 @@ class Search {
       pagetoken,
     );
 
-    var uri =
-        Uri.https(_authority, _unencodedPathNearBySearch, queryParameters);
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.nearbySearch,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathNearBySearch,
+      queryParameters: queryParameters,
+    );
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// The Google Places API Text Search Service is a web service that returns information about a set of places
@@ -406,8 +452,17 @@ class Search {
       pagetoken,
     );
 
-    var uri = Uri.https(_authority, _unencodedPathTextSearch, queryParameters);
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.textSearch,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPathTextSearch,
+      queryParameters: queryParameters,
+    );
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// Prepare query Parameters for find place

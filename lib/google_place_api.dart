@@ -3,6 +3,14 @@ import 'package:google_place_api/src/details/details.dart';
 import 'package:google_place_api/src/photos/photos.dart';
 import 'package:google_place_api/src/query_autocomplete/query_autocomplete.dart';
 import 'package:google_place_api/src/search/search.dart';
+import 'package:google_place_api/src/utils/http_places_http_client.dart';
+import 'package:google_place_api/src/utils/places_http_client.dart';
+import 'package:google_place_api/src/utils/places_proxy_config.dart';
+
+export 'package:google_place_api/src/utils/http_places_http_client.dart';
+export 'package:google_place_api/src/utils/places_http_client.dart';
+export 'package:google_place_api/src/utils/places_operation.dart';
+export 'package:google_place_api/src/utils/places_proxy_config.dart';
 
 export 'package:google_place_api/src/autocomplete/autocomplete_prediction.dart';
 export 'package:google_place_api/src/autocomplete/autocomplete_response.dart';
@@ -70,15 +78,62 @@ class GooglePlace {
   /// http proxies are supported, but are not recommended for production use.
   final String? proxyUrl;
 
+  /// Optional clean REST proxy configuration for backend proxies that inject the API key.
+  final PlacesProxyConfig? proxyConfig;
+
+  /// Optional custom URI builder. Highest priority when building request URLs.
+  final PlacesUriBuilder? uriBuilder;
+
+  /// HTTP client used for all Places API requests.
+  final PlacesHttpClient httpClient;
+
   GooglePlace(
     this.apiKEY, {
     this.headers = const {},
     this.proxyUrl,
-  }) {
-    search = Search(apiKEY, headers, proxyUrl);
-    details = Details(apiKEY, headers, proxyUrl);
-    photos = Photos(apiKEY, headers, proxyUrl);
-    autocomplete = Autocomplete(apiKEY, headers, proxyUrl);
-    queryAutocomplete = QueryAutocomplete(apiKEY, headers, proxyUrl);
+    this.proxyConfig,
+    this.uriBuilder,
+    PlacesHttpClient? httpClient,
+  }) : httpClient = httpClient ?? HttpPlacesHttpClient() {
+    search = Search(
+      apiKEY,
+      headers,
+      proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      httpClient: this.httpClient,
+    );
+    details = Details(
+      apiKEY,
+      headers,
+      proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      httpClient: this.httpClient,
+    );
+    photos = Photos(
+      apiKEY,
+      headers,
+      proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      httpClient: this.httpClient,
+    );
+    autocomplete = Autocomplete(
+      apiKEY,
+      headers,
+      proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      httpClient: this.httpClient,
+    );
+    queryAutocomplete = QueryAutocomplete(
+      apiKEY,
+      headers,
+      proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      httpClient: this.httpClient,
+    );
   }
 }

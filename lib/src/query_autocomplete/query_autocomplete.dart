@@ -7,8 +7,18 @@ class QueryAutocomplete {
   final String apiKEY;
   final Map<String, String> headers;
   final String? proxyUrl;
+  final PlacesProxyConfig? proxyConfig;
+  final PlacesUriBuilder? uriBuilder;
+  final PlacesHttpClient httpClient;
 
-  QueryAutocomplete(this.apiKEY, this.headers, this.proxyUrl);
+  QueryAutocomplete(
+    this.apiKEY,
+    this.headers,
+    this.proxyUrl, {
+    this.proxyConfig,
+    this.uriBuilder,
+    required this.httpClient,
+  });
 
   /// The Query Autocomplete service can be used to provide a query prediction for text-based
   /// geographic searches, by returning suggested queries as you type.
@@ -48,9 +58,17 @@ class QueryAutocomplete {
       radius,
       language,
     );
-    var uri = NetworkUtility.createUri(
-        proxyUrl, _authority, _unencodedPath, queryParameters);
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.queryAutocomplete,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
+    );
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return AutocompleteResponse.parseAutocompleteResult(response);
     }
@@ -96,9 +114,17 @@ class QueryAutocomplete {
       language,
     );
 
-    var uri = NetworkUtility.createUri(
-        proxyUrl, _authority, _unencodedPath, queryParameters);
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.queryAutocomplete,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
+    );
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// Prepare query Parameters

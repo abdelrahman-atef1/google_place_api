@@ -7,8 +7,18 @@ class Autocomplete {
   final String apiKEY;
   final Map<String, String> headers;
   final String? proxyUrl;
+  final PlacesProxyConfig? proxyConfig;
+  final PlacesUriBuilder? uriBuilder;
+  final PlacesHttpClient httpClient;
 
-  Autocomplete(this.apiKEY, this.headers, this.proxyUrl);
+  Autocomplete(
+    this.apiKEY,
+    this.headers,
+    this.proxyUrl, {
+    this.proxyConfig,
+    this.uriBuilder,
+    required this.httpClient,
+  });
 
   /// The Place Autocomplete service is a web service that returns place predictions in response
   ///  to an HTTP request. The request specifies a textual search string and optional geographic
@@ -99,13 +109,17 @@ class Autocomplete {
       strictbounds,
     );
 
-    var uri = NetworkUtility.createUri(
-      proxyUrl,
-      _authority,
-      _unencodedPath,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.autocomplete,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
     );
-    var response = await NetworkUtility.fetchUrl(uri, headers: headers);
+    var response =
+        await NetworkUtility.fetchUrl(uri, headers: headers, httpClient: httpClient);
     if (response != null) {
       return AutocompleteResponse.parseAutocompleteResult(response);
     }
@@ -200,14 +214,17 @@ class Autocomplete {
       strictbounds,
     );
 
-    var uri = Uri.https(
-      proxyUrl != null && proxyUrl != '' ? proxyUrl! : _authority,
-      proxyUrl != null && proxyUrl != ''
-          ? 'https://$_authority/$_unencodedPath'
-          : _unencodedPath,
-      queryParameters,
+    var uri = NetworkUtility.buildPlacesUri(
+      proxyUrl: proxyUrl,
+      proxyConfig: proxyConfig,
+      uriBuilder: uriBuilder,
+      operation: PlacesOperation.autocomplete,
+      authority: _authority,
+      unencodedGoogleMapsPath: _unencodedPath,
+      queryParameters: queryParameters,
     );
-    return await NetworkUtility.fetchUrl(uri, headers: headers);
+    return await NetworkUtility.fetchUrl(uri,
+        headers: headers, httpClient: httpClient);
   }
 
   /// Prepare query Parameters
