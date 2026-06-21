@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.1.2] - 2026-06-21
+
+- Shorten pubspec description to meet pub.dev conventions (60–180 characters)
+- Add missing type annotations in `search.dart` for static analysis
+
 ## [1.1.1] - 2026-06-21
 
 - Move `flutter_lints` from dependencies to dev_dependencies

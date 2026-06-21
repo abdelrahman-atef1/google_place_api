@@ -527,7 +527,7 @@ class Search {
 
   /// Prepare query Parameters for near by search
   Map<String, String?> _createNearBySearchParameters(
-    apiKEY,
+    String apiKEY,
     Location location,
     int radius,
     String? keyword,
@@ -623,7 +623,7 @@ class Search {
 
   /// Prepare query Parameters for text search
   Map<String, String> _createTextSearchParameters(
-    apiKEY,
+    String apiKEY,
     String query,
     String? region,
     Location? location,
